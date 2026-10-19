@@ -1,8 +1,8 @@
 # ha-home-connect-card
 
-[![HACS Badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 [![HACS Validation](https://github.com/juju35/ha-home-connect-card/actions/workflows/validate.yml/badge.svg)](https://github.com/juju35/ha-home-connect-card/actions/workflows/validate.yml)
-[![GitHub Release](https://img.shields.io/github/v/release/juju35/ha-home-connect-card)](https://github.com/juju35/ha-home-connect-card/releases/latest)
+[![Release](https://img.shields.io/github/v/release/juju35/ha-home-connect-card)](https://github.com/juju35/ha-home-connect-card/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Custom Lovelace cards for Home Assistant's [Home Connect](https://www.home-assistant.io/integrations/home_connect/) integration (Bosch, Siemens, Neff, Gaggenau): **one card per appliance type**, a dishwasher card and a washing machine card.
