@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0
+
+### Fixes
+- Program options (intensive zone, brilliance dry, speed perfect, hygiene plus…) no longer disappear when Home Connect hasn't loaded them: they stay visible, greyed out, until they're available.
+
+### What's new
+- **Load options** button when no option is loaded yet, for example after a Home Assistant restart. It switches to another program and back, which makes Home Connect send the options.
+- New README screenshot of the dishwasher with its program options.
+
 ## 1.0.0
 
 First public release.

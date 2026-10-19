@@ -1,4 +1,4 @@
-var HOME_CONNECT_CARD_VERSION = '1.0.0';
+var HOME_CONNECT_CARD_VERSION = '1.1.0';
 
 // ── i18n ──────────────────────────────────────────────────────────────────────
 var HcI18n = {
@@ -30,6 +30,8 @@ var HcI18n = {
     resume: 'Reprendre',
     power: 'Marche / arrêt',
     options: 'Options',
+    options_not_loaded: 'Options non chargées pour ce programme',
+    reload_options: 'Charger les options',
     salt: 'Sel presque vide',
     rinse_aid: 'Liquide de rinçage presque vide',
     remote_start_off: 'Démarrage à distance désactivé',
@@ -88,6 +90,8 @@ var HcI18n = {
     resume: 'Resume',
     power: 'Power',
     options: 'Options',
+    options_not_loaded: 'Options not loaded for this program',
+    reload_options: 'Load options',
     salt: 'Salt nearly empty',
     rinse_aid: 'Rinse aid nearly empty',
     remote_start_off: 'Remote start disabled',
@@ -345,7 +349,7 @@ class HomeConnectBaseCard extends HTMLElement {
       r.ent.active_program, r.ent.power, r.ent.remote_start, r.ent.connectivity, r.ent.salt, r.ent.rinse_aid,
       r.ent.stop, r.ent.pause, r.ent.resume].concat(r.ent.option_switches, r.ent.option_selects);
     var hass = this._hass;
-    var sig = JSON.stringify([this._lang(), r.deviceId, this._confirming, ids.map(function (id) {
+    var sig = JSON.stringify([this._lang(), r.deviceId, this._confirming, this._reloading, ids.map(function (id) {
       var s = id && hass.states[id];
       return s ? [id, s.state, s.attributes.options] : null;
     })]);
@@ -431,21 +435,34 @@ class HomeConnectBaseCard extends HTMLElement {
     var optionsHtml = '';
     // Options can't be changed once a program runs, so they're only shown before starting.
     if (c.show_options && online && powerOn && !running) {
-      var selects = ent.option_selects.filter((id) => this._avail(id)).map((id) => {
-        var s = this._st(id);
-        var o = (s.attributes.options || []).map((v) =>
-          '<option value="' + hcEsc(v) + '"' + (v === s.state ? ' selected' : '') + '>' + hcEsc(this._fmt(id, v)) + '</option>').join('');
-        return '<label class="field small"><span>' + hcEsc(this._entityLabel(id, deviceName)) + '</span><select data-select="' + id + '">' + o + '</select></label>';
+      // Options the selected program doesn't support (or not loaded yet) stay visible, greyed out.
+      var optIds = ent.option_selects.concat(ent.option_switches).filter((id) => this._st(id));
+      var anyAvail = optIds.some((id) => this._avail(id));
+      var selects = ent.option_selects.filter((id) => this._st(id)).map((id) => {
+        var s = this._st(id), ok = this._avail(id);
+        var o = ok
+          ? (s.attributes.options || []).map((v) =>
+            '<option value="' + hcEsc(v) + '"' + (v === s.state ? ' selected' : '') + '>' + hcEsc(this._fmt(id, v)) + '</option>').join('')
+          : '<option selected>—</option>';
+        return '<label class="field small"><span>' + hcEsc(this._entityLabel(id, deviceName)) + '</span><select data-select="' + id + '"' + (ok ? '' : ' disabled') + '>' + o + '</select></label>';
       }).join('');
-      var toggles = ent.option_switches.filter((id) => this._avail(id)).map((id) => {
-        var on = this._val(id) === 'on';
-        return '<button class="toggle' + (on ? ' on' : '') + '" data-toggle="' + id + '">' +
+      var toggles = ent.option_switches.filter((id) => this._st(id)).map((id) => {
+        var ok = this._avail(id), on = ok && this._val(id) === 'on';
+        return '<button class="toggle' + (on ? ' on' : '') + '" data-toggle="' + id + '"' + (ok ? '' : ' disabled') + '>' +
           '<ha-icon icon="' + (on ? 'mdi:checkbox-marked-circle' : 'mdi:checkbox-blank-circle-outline') + '"></ha-icon>' + hcEsc(this._entityLabel(id, deviceName)) + '</button>';
       }).join('');
+      // Home Connect only loads options when the selected program changes, so after
+      // a Home Assistant restart they all stay unavailable until then.
+      var reload = '';
+      if (optIds.length && !anyAvail) {
+        var canReload = this._avail(ent.selected_program) && (this._st(ent.selected_program).attributes.options || []).length > 1;
+        reload = '<div class="reload"><span>' + this._t('options_not_loaded') + '</span>' +
+          (canReload ? '<button class="link" data-action="reload_options"' + (this._reloading ? ' disabled' : '') + '><ha-icon icon="mdi:refresh"></ha-icon>' + this._t('reload_options') + '</button>' : '') + '</div>';
+      }
       if (selects || toggles) {
         optionsHtml = '<div class="section"><div class="section-title">' + this._t('options') + '</div>' +
           (selects ? '<div class="grid">' + selects + '</div>' : '') +
-          (toggles ? '<div class="toggles">' + toggles + '</div>' : '') + '</div>';
+          (toggles ? '<div class="toggles">' + toggles + '</div>' : '') + reload + '</div>';
       }
     }
 
@@ -540,6 +557,10 @@ class HomeConnectBaseCard extends HTMLElement {
       '.toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 5px 10px 5px 6px; border-radius: 14px;' +
         ' background: var(--secondary-background-color, rgba(128,128,128,0.12)); color: var(--secondary-text-color); }' +
       '.toggle ha-icon { --mdc-icon-size: 16px; }' +
+      '.toggle:disabled { opacity: 0.45; }' +
+      '.reload { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--secondary-text-color); }' +
+      '.link { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; padding: 4px 8px; border-radius: 8px; background: none; color: var(--primary-color, #03a9f4); }' +
+      '.link ha-icon { --mdc-icon-size: 16px; }' +
       '.toggle.on { background: color-mix(in srgb, var(--primary-color, #03a9f4) 18%, transparent); color: var(--primary-color, #03a9f4); }' +
       '.controls { display: flex; gap: 8px; }' +
       '.btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 500;' +
@@ -569,6 +590,9 @@ class HomeConnectBaseCard extends HTMLElement {
         // Selecting an option on the "active program" select starts it.
         hass.callService('select', 'select_option', { entity_id: ent.active_program, option: this._val(ent.selected_program) });
         break;
+      case 'reload_options':
+        this._reloadOptions();
+        break;
       case 'pause':
         hass.callService('button', 'press', { entity_id: ent.pause });
         break;
@@ -587,6 +611,25 @@ class HomeConnectBaseCard extends HTMLElement {
         }
         this._update();
         break;
+    }
+  }
+
+  // Switch to another program and back: that's what makes Home Connect send the options.
+  async _reloadOptions() {
+    var id = this._r.ent.selected_program, s = this._st(id);
+    if (!s || this._reloading) return;
+    var current = s.state;
+    var other = (s.attributes.options || []).find((o) => o !== current);
+    if (!other) return;
+    this._reloading = true;
+    this._update();
+    try {
+      await this._hass.callService('select', 'select_option', { entity_id: id, option: other });
+      await this._hass.callService('select', 'select_option', { entity_id: id, option: current });
+    } finally {
+      this._reloading = false;
+      this._sig = null;
+      this._update();
     }
   }
 

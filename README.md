@@ -15,6 +15,7 @@ Pick the appliance, the card finds all its entities by itself.
 |---|---|
 | ![Dishwasher card](https://raw.githubusercontent.com/juju35/ha-home-connect-card/main/screenshots/dishwasher.png) | ![Washing machine card](https://raw.githubusercontent.com/juju35/ha-home-connect-card/main/screenshots/washer.png) |
 | ![Dishwasher card, dark theme](https://raw.githubusercontent.com/juju35/ha-home-connect-card/main/screenshots/dishwasher-dark.png) | ![Washing machine card, dark theme](https://raw.githubusercontent.com/juju35/ha-home-connect-card/main/screenshots/washer-dark.png) |
+| ![Dishwasher card with program options](https://raw.githubusercontent.com/juju35/ha-home-connect-card/main/screenshots/dishwasher-options.png) | |
 
 ## Features
 
@@ -22,7 +23,7 @@ Pick the appliance, the card finds all its entities by itself.
 - Automatic entity discovery from the Home Connect device (works with English or French entity IDs), each entity can be overridden
 - Status with color, progress bar, finish time and time left
 - Program picker and **Start** button (when remote start is enabled on the appliance), **Pause / Resume** for washers, **Stop** with a confirmation tap
-- Program options before starting: temperature, spin speed, Vario Perfect, intensive zone, hygiene… whatever your appliance exposes
+- Program options before starting: temperature, spin speed, Vario Perfect for washers; intensive zone, brilliance dry, speed perfect, hygiene plus for dishwashers… whatever your appliance exposes. Options the selected program doesn't support are greyed out
 - Door state, salt and rinse aid alerts
 - Visual editor in the dashboard UI (no YAML needed)
 - English and French, follows the Home Assistant language
@@ -135,6 +136,8 @@ Every other `switch` and `select` of the device is shown as a program option.
 ## How it works
 
 The card reads the entity registry to list the entities of the chosen device, then matches each role by its translation key, then by its entity ID (English and French slugs), then by its attributes. Program and option labels use Home Assistant's own translations.
+
+Home Connect only sends program options when the selected program changes, so after a Home Assistant restart they all stay unavailable. The card then shows them greyed out with a **Load options** button, which switches to another program and back to load them.
 
 **Start** selects the chosen program on the *Active program* entity, which is how the Home Connect integration starts a program. **Stop** asks for a second tap within 3 seconds.
 
