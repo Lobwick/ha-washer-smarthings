@@ -235,6 +235,12 @@ function hcHumanize(value) {
   return v.charAt(0).toUpperCase() + v.slice(1);
 }
 
+// Home Connect logo: a blue speech bubble with a white house.
+var HC_LOGO = '<svg class="logo" viewBox="0 0 292 292" role="img" aria-label="Home Connect"><title>Home Connect</title>' +
+  '<defs><linearGradient id="hc-logo-g" x1="0" y1="0" x2="292" y2="292" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#304ae2"/><stop offset="1" stop-color="#5fc9ff"/></linearGradient></defs>' +
+  '<path fill="url(#hc-logo-g)" d="M146 .5A145.5 145.5 0 1 0 215 272L278 285Q288 287 286 277L270 220A145.5 145.5 0 0 0 146 .5Z"/>' +
+  '<path fill="#fff" stroke="#fff" stroke-width="8" stroke-linejoin="round" d="M147.5 64L200 108.5V202H95V108.5Z"/></svg>';
+
 // ── Base card ────────────────────────────────────────────────────────────────
 class HomeConnectBaseCard extends HTMLElement {
   static get kind() { return 'dishwasher'; }
@@ -504,7 +510,7 @@ class HomeConnectBaseCard extends HTMLElement {
     this.shadowRoot.innerHTML = this._styles(color) + '<ha-card>' +
       '<div class="header">' +
         '<div class="badge' + (state === 'run' ? ' running' : '') + '"><ha-icon icon="' + hcEsc(icon) + '"></ha-icon></div>' +
-        '<div class="titles"><div class="name">' + hcEsc(name) + '</div><div class="status">' + subtitle + '</div></div>' +
+        '<div class="titles"><div class="name"><span>' + hcEsc(name) + '</span>' + HC_LOGO + '</div><div class="status">' + subtitle + '</div></div>' +
         powerBtn +
       '</div>' +
       (chips.length ? '<div class="chips">' + chips.join('') + '</div>' : '') +
@@ -524,7 +530,9 @@ class HomeConnectBaseCard extends HTMLElement {
       '.badge.running ha-icon { animation: hc-pulse 2s ease-in-out infinite; }' +
       '@keyframes hc-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.88); opacity: 0.7; } }' +
       '.titles { flex: 1; min-width: 0; }' +
-      '.name { font-size: 16px; font-weight: 500; color: var(--primary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }' +
+      '.name { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 500; color: var(--primary-text-color); }' +
+      '.name span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }' +
+      '.name .logo { width: 18px; height: 18px; flex-shrink: 0; }' +
       '.status { font-size: 13px; color: var(--hc-color); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }' +
       'button { font: inherit; cursor: pointer; border: none; }' +
       'button:disabled { cursor: default; opacity: 0.5; }' +

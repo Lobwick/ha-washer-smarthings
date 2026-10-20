@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### What's new
+- Home Connect logo next to the appliance name.
+
 ## 1.1.0
 
 ### Fixes
