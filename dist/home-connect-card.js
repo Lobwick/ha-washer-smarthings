@@ -1,4 +1,4 @@
-var HOME_CONNECT_CARD_VERSION = '1.1.0';
+var HOME_CONNECT_CARD_VERSION = '1.2.0';
 
 // ── i18n ──────────────────────────────────────────────────────────────────────
 var HcI18n = {
