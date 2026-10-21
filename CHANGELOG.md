@@ -4,7 +4,7 @@
 
 ### Changes
 - State colors come from the Home Assistant theme (`--info-color` running, `--warning-color` paused or action required, `--success-color` finished, `--error-color` error) with the Home Assistant defaults as fallbacks; the Stop button and the open-door chip follow them too.
-- Header aligned with the other juju35 cards: 40px badge, name 18px.
+- Header aligned with the other ha-* cards: 40px badge, name 18px.
 - Chips, toggles, fields and the progress bar use the shared sizes and radii (12px pills, 10px fields, 6px bar).
 
 ### Development
