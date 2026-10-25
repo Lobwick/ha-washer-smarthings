@@ -1,104 +1,16 @@
 # Changelog
 
-## 1.5.3
+## 0.1.0
 
-### Fixes
-- **Start** no longer fails on a momentary refusal from the appliance (`BadRequest`, `WrongOperationState`): the card retries once after 3 seconds, with a disabled "Starting…" button meanwhile. If it still fails, a short translated message shows in the card (technical detail in its tooltip) instead of Home Assistant's raw error; it goes away on the next state change or after 10 seconds.
-- While a program is being set on the appliance itself (*Remote control* off), the options section says so and **Load options** is disabled until remote control is back; the card never reloads the options by itself. A failed reload shows a message in the card and the original program is always restored.
-- An appliance that refuses to be turned off gets a message in the card instead of a raw error, and its power button stays disabled while it's on; turning it on still works.
+First release: a fork of [ha-home-connect-card](https://github.com/juju35/ha-home-connect-card) (MIT) rewritten for Samsung washing machines on the Home Assistant **SmartThings** integration.
 
-### Changes
-- New `remote_control` entity override (auto-detected, documented in the README and offered in the editor).
+### Features
+- One card, `smartthings-washer-card`, found from the device: status (running, paused, ready, finished, off), current cycle step (wash, rinse, spin…), finish time and time left.
+- Estimated progress bar: SmartThings gives no percentage, so the longest remaining time seen since the cycle started is taken as the total.
+- **Start**, **Pause**, **Resume** and **Stop** (with a confirmation tap) through the machine's run / pause / stop select. Disabled, with an explanation, while *Remote control* is off on the machine.
+- Cycle options before starting: spin level, water temperature, and any other select or switch of the device (such as Bubble Soak).
+- Chips for remote control off, child lock and live power draw.
+- Visual editor, English and French, light and dark themes, entity overrides.
 
-## 1.5.2
-
-### Maintenance
-- Lint warnings on the editor and card-picker lookups silenced so an automatic Biome fix cannot give the washer card the dishwasher profile again; duplication checks run on Node 22. Nothing changes for users.
-
-## 1.5.1
-
-### Maintenance
-- Deterministic screenshots (fixed clock and time zone), each rendered in a fresh page; duplication checks no longer scan the tests. Nothing changes for users.
-
-## 1.5.0
-
-### Changes
-- The visual editor follows the card's `language` option.
-- `connectivity`, `salt` and `rinse_aid` entity overrides documented in the README and offered in the editor (salt and rinse aid on the dishwasher card only).
-
-### Fixes
-- A washer card added from the card picker gets a washer instead of the first dishwasher, and its editor keeps the `pause` / `resume` overrides.
-- The Pause button shows from the start: a button entity never pressed yet (`unknown`) no longer hides it; it still hides when `unavailable`.
-- The 30 s refresh only redraws the card while a program with a finish time runs, instead of rebuilding it every 30 s when idle.
-- Lighter updates: the appliance's entities are no longer looked up in the whole entity registry on every Home Assistant update.
-- The status text and the config values (icon, entity ids) are HTML-escaped.
-
-### Maintenance
-- CI hardening: actions pinned by commit SHA, read-only workflow token, monthly Dependabot updates, duplication findings annotated in pull requests.
-- Unit tests (`npm test`) run in CI; `package-lock.json` version synced. Nothing changes for users.
-
-## 1.4.1
-
-### Maintenance
-- Tooling only, no functional change: Biome linting, pre-commit and a Lint CI (duplication checks). Card source modernized (optional chaining, template literals), identical behavior.
-
-## 1.4.0
-
-### Changes
-- More compact layout with the same information, like the other ha-* cards: 12 px card padding, 36 px header icon, 16 px name and 12 px subtitle, 11 px pills, tighter tiles and sections.
-- Appliance icon and power button 40 → 36 px, lower program selector, options and buttons, 4 px progress bar.
-
-## 1.3.3
-
-### Changes
-- HACS now asks for Home Assistant 2024.8 or later, the version that brought the sections view the card supports; the README says so under **Prerequisites**.
-
-## 1.3.2
-
-### Maintenance
-- Merged branches are deleted automatically (new `cleanup-branches` workflow). Nothing changes for users.
-
-## 1.3.1
-
-### Development
-- The built card is no longer committed in `dist/`: CI builds it on every push, and the release workflow builds it and attaches it to the release, which is where HACS downloads it from. Nothing changes for users.
-
-## 1.3.0
-
-### Changes
-- State colors come from the Home Assistant theme (`--info-color` running, `--warning-color` paused or action required, `--success-color` finished, `--error-color` error) with the Home Assistant defaults as fallbacks; the Stop button and the open-door chip follow them too.
-- Header aligned with the other ha-* cards: 40px badge, name 18px.
-- Chips, toggles, fields and the progress bar use the shared sizes and radii (12px pills, 10px fields, 6px bar).
-
-### Development
-- The card source moves to `src/home-connect-card.js`; `npm run build` stamps the version from `package.json` into `dist/home-connect-card.js`, and CI checks that `dist/` is up to date.
-- `npm run screenshots` renders the README screenshots with mock Home Connect devices.
-- Releases are published when `version` in `package.json` has no tag yet.
-
-## 1.2.0
-
-### What's new
-- Home Connect logo next to the appliance name.
-
-## 1.1.0
-
-### Fixes
-- Program options (intensive zone, brilliance dry, speed perfect, hygiene plus…) no longer disappear when Home Connect hasn't loaded them: they stay visible, greyed out, until they're available.
-
-### What's new
-- **Load options** button when no option is loaded yet, for example after a Home Assistant restart. It switches to another program and back, which makes Home Connect send the options.
-- New README screenshot of the dishwasher with its program options.
-
-## 1.0.0
-
-First public release.
-
-### What's new
-- Two cards for the Home Connect integration: `home-connect-dishwasher-card` and `home-connect-washer-card`.
-- Pick the appliance once: every entity (state, door, progress, finish time, programs, power, stop/pause/resume, alerts) is found automatically from the device, and any of them can be overridden.
-- Status with color, progress bar, finish time and time left while a program runs.
-- Program picker and Start button (when remote start is enabled on the appliance), Pause/Resume for washers, Stop with a confirmation tap.
-- Program options before starting: temperature, spin speed, Vario Perfect, intensive zone, hygiene and so on, whatever the appliance exposes.
-- Door state, salt and rinse aid alerts.
-- Visual editor in the dashboard UI, labels in English and French.
-- Light and dark theme compatible, installable via HACS.
+### Removed compared to the Home Connect card
+- Program picker, door chip, salt / rinse aid alerts and the power button: SmartThings exposes none of them for this machine.

@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a bug with the Home Connect Card
+about: Report a bug with the SmartThings Washer Card
 title: "[Bug] "
 labels: bug
 assignees: ""
@@ -30,7 +30,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Card configuration:**
 ```yaml
-type: custom:home-connect-dishwasher-card
+type: custom:smartthings-washer-card
 device_id: ...
 ```
 

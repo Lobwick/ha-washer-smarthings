@@ -1,17 +1,13 @@
 {
-  "name": "ha-home-connect-card",
-  "version": "1.5.3",
-  "description": "Lovelace cards for Home Connect dishwashers and washing machines in Home Assistant.",
+  "name": "ha-washer-smarthings",
+  "version": "0.1.0",
+  "description": "Lovelace card for Samsung SmartThings washing machines in Home Assistant.",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node scripts/build.mjs && node --check dist/home-connect-card.js",
-    "screenshots": "node scripts/screenshots.mjs",
+    "check": "node scripts/build.mjs && node --check dist/smartthings-washer-card.js",
     "test": "node --test \"test/*.test.mjs\""
   },
-  "license": "MIT",
-  "devDependencies": {
-    "playwright": "^1.56.1"
-  }
+  "license": "MIT"
 }
