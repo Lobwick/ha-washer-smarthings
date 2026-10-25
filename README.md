@@ -4,6 +4,8 @@ A custom Lovelace card for **Samsung washing machines** connected through Home A
 
 Pick the appliance, the card finds all its entities by itself.
 
+[![Open your Home Assistant instance and open this repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Lobwick&repository=ha-washer-smarthings&category=plugin)
+
 This is a fork of [ha-home-connect-card](https://github.com/juju35/ha-home-connect-card) by juju35 (MIT), adapted to the entities SmartThings exposes. The structure, visual editor and look come from the original.
 
 ## Features
@@ -26,10 +28,16 @@ This is a fork of [ha-home-connect-card](https://github.com/juju35/ha-home-conne
 
 ## Installation
 
-### Via HACS
+### Via HACS (recommended)
+
+Click the button below to add the repository directly:
+
+[![Open your Home Assistant instance and open this repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Lobwick&repository=ha-washer-smarthings&category=plugin)
+
+Or manually:
 
 1. Open HACS → **Frontend** → **⋮** → **Custom repositories**
-2. Add this repository, Category: **Dashboard** (Lovelace)
+2. Add `https://github.com/Lobwick/ha-washer-smarthings` — Category: **Dashboard** (Lovelace)
 3. Search for **SmartThings Washer Card** and install it
 4. Clear your browser cache and refresh
 
@@ -37,7 +45,7 @@ HACS registers the dashboard resource for you.
 
 ### Manual
 
-1. Download `smartthings-washer-card.js` from the latest release
+1. Download `smartthings-washer-card.js` from the [latest release](https://github.com/Lobwick/ha-washer-smarthings/releases/latest)
 2. Copy it to `/config/www/smartthings-washer-card.js`
 3. Go to **Settings → Dashboards → Resources** → Add resource:
    - URL: `/local/smartthings-washer-card.js`

@@ -852,6 +852,7 @@ if (!customElements.get(SW_TYPE)) {
     name: 'SmartThings Washer Card',
     description: 'Washing machine card for the SmartThings integration (Samsung)',
     preview: true,
+    documentationURL: 'https://github.com/Lobwick/ha-washer-smarthings',
   });
 }
 
